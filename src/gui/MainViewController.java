@@ -38,18 +38,18 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	public void onMenuItemDepartmentAction() {
-		Alerts.showAlert("onMenuItemDepartmentAction", null, "Department action", AlertType.INFORMATION);
+		loadView("DepartmentList");
 	}
 
 	@FXML
 	public void onMenuItemAboutAction() {
-		loadFxml("/gui/AboutView.fxml");
+		loadView("About");
 	}
 
-	private void loadFxml(String fxmlPath) {
+	private void loadView(String fxmlPath) {
 		try {
 
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/"+fxmlPath+"View.fxml"));
 			VBox newVBox = loader.load();
 			
 			Scene mainScene = Main.getMainScene();
