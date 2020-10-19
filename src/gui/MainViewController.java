@@ -11,10 +11,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
+import model.services.DepartmentService;
 
 public class MainViewController implements Initializable {
 
@@ -32,13 +33,15 @@ public class MainViewController implements Initializable {
 	}
 
 	@FXML
-	public void onMenuItemSellerAction() {		
+	public void onMenuItemSellerAction() {
 		Alerts.showAlert("onMenuItemSellerAction", null, "Seller action", AlertType.INFORMATION);
 	}
 
 	@FXML
 	public void onMenuItemDepartmentAction() {
-		loadView("DepartmentList");
+		DepartmentListController controller = (DepartmentListController) loadView("DepartmentList");
+		controller.setDepartmentService(new DepartmentService());
+		controller.updateTableView();
 	}
 
 	@FXML
@@ -46,25 +49,28 @@ public class MainViewController implements Initializable {
 		loadView("About");
 	}
 
-	private void loadView(String fxmlPath) {
+	private synchronized Object loadView(String fxmlPath) {
 		try {
 
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/"+fxmlPath+"View.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/" + fxmlPath + "View.fxml"));
 			VBox newVBox = loader.load();
-			
+
 			Scene mainScene = Main.getMainScene();
 			VBox mainVBox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
-			
+
 			Node menuBar = mainVBox.getChildren().get(0);
-			
+
 			mainVBox.getChildren().clear();
 			mainVBox.getChildren().add(menuBar);
 			mainVBox.getChildren().addAll(newVBox.getChildren());
+
+			return loader.getController();
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		return null;
 	}
 }
