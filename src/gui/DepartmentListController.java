@@ -2,10 +2,13 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import db.MyDbException;
 import gui.listeners.DataChangeListener;
+import gui.util.Alerts;
 import gui.util.utils;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -16,9 +19,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -38,6 +43,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private TableColumn<Department, String> tableColumnName;
 	@FXML
 	TableColumn<Department, Department> tableColumnEDIT;
+	@FXML
+	TableColumn<Department, Department> tableColumnDelete;
 
 	private DepartmentService departmentService;
 	private ObservableList<Department> obsList;
@@ -72,6 +79,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		obsList = FXCollections.observableArrayList(departmentService.findAll());
 		tableView.setItems(obsList);
 		initEditButtons();
+		initRemoveButtons();
 	}
 
 	private void createDialogForm(Department department, Stage parentStage) {
@@ -103,7 +111,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 
 	@Override
 	public void onDataUpdate() {
-		updateTableView();		
+		updateTableView();
 	}
 
 	private void initEditButtons() {
@@ -122,5 +130,36 @@ public class DepartmentListController implements Initializable, DataChangeListen
 				button.setOnAction(event -> createDialogForm(obj, utils.getStageOfEvent((event))));
 			}
 		});
+	}
+
+	private void initRemoveButtons() {
+		tableColumnDelete.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnDelete.setCellFactory(param -> new TableCell<Department, Department>() {
+			private final Button button = new Button("remove");
+
+			@Override
+			protected void updateItem(Department obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(event -> removeDepartment(obj));
+			}
+		});
+	}
+
+	protected void removeDepartment(Department obj) {
+
+		Optional<ButtonType> button = Alerts.showConfirmation("Remove Department", "You confirm delete?");
+		if (button.get() == ButtonType.OK) {
+			try {
+				departmentService.remove(obj);
+				updateTableView();
+			} catch (MyDbException e) {
+				Alerts.showAlert("Error", null, "Error on delete Department: "+e.getMessage(), AlertType.ERROR);
+			}
+		}
 	}
 }
