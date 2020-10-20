@@ -17,6 +17,7 @@ import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
 
+	Department department;
 	DepartmentService departmentService;
 
 	@FXML
@@ -55,6 +56,17 @@ public class DepartmentFormController implements Initializable {
 	private void constraintsNodes() {
 		Constraints.setTextFieldInteger(textFieldId);
 		Constraints.setTextFieldMaxLength(textFieldName, 30);
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	public void updateFormData() {
+		if (department == null)
+			throw new IllegalStateException("Attribute department was null");
+		textFieldId.setText(String.valueOf(department.getId()));
+		textFieldName.setText(department.getName());
 	}
 
 }
