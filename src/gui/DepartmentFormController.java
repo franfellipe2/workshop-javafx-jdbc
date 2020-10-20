@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import gui.listeners.DataChangeListener;
 import gui.util.Constraints;
 import gui.util.utils;
 import javafx.event.ActionEvent;
@@ -19,6 +22,7 @@ public class DepartmentFormController implements Initializable {
 
 	Department department;
 	DepartmentService departmentService;
+	List<DataChangeListener> onDataChangeListeners = new ArrayList<>();
 
 	@FXML
 	TextField textFieldId;
@@ -45,7 +49,7 @@ public class DepartmentFormController implements Initializable {
 		department.setId(utils.tryPaserInt(textFieldId.getText()));
 		department.setName(textFieldName.getText());
 		departmentService.save(department);
-
+		notifyOnDataChengeListeners();
 		stage.close();
 	}
 
@@ -84,6 +88,20 @@ public class DepartmentFormController implements Initializable {
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+
+	public void addOnDataChanhgeListener(DataChangeListener listener) {
+		onDataChangeListeners.add(listener);
+	}
+
+	public void removeOnDataChanhgeListener(DataChangeListener listener) {
+		onDataChangeListeners.remove(listener);
+	}
+
+	private void notifyOnDataChengeListeners() {
+		for (DataChangeListener dataChangeListener : onDataChangeListeners) {
+			dataChangeListener.onDataUpdate();
+		}
 	}
 
 }

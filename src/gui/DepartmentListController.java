@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangeListener;
 import gui.util.utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +24,7 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
 
-public class DepartmentListController implements Initializable {
+public class DepartmentListController implements Initializable, DataChangeListener {
 
 	@FXML
 	private Button btNew;
@@ -73,25 +74,30 @@ public class DepartmentListController implements Initializable {
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/DepartmentFormView.fxml"));
 			Pane pane = loader.load();
-			
+
 			Scene scene = new Scene(pane);
 			Stage dialogStage = new Stage();
-			
+
 			DepartmentFormController controller = loader.getController();
 			controller.setStage(dialogStage);
 			controller.setDepartment(department);
+			controller.addOnDataChanhgeListener(this);
 			controller.setDepartmentService(new DepartmentService());
 			controller.updateFormData();
-			
+
 			dialogStage.setTitle("Create new department");
 			dialogStage.setScene(scene);
 			dialogStage.initOwner(parentStage);
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.showAndWait();
-			
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onDataUpdate() {
+		updateTableView();
 	}
 }
