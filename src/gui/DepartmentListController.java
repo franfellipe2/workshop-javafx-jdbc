@@ -73,21 +73,24 @@ public class DepartmentListController implements Initializable {
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/DepartmentFormView.fxml"));
 			Pane pane = loader.load();
-
-			DepartmentFormController controller = loader.getController();
-			controller.setDepartment(department);
-			controller.updateFormData();
 			
 			Scene scene = new Scene(pane);
 			Stage dialogStage = new Stage();
+			
+			DepartmentFormController controller = loader.getController();
+			controller.setStage(dialogStage);
+			controller.setDepartment(department);
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateFormData();
+			
 			dialogStage.setTitle("Create new department");
 			dialogStage.setScene(scene);
 			dialogStage.initOwner(parentStage);
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.showAndWait();
+			
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

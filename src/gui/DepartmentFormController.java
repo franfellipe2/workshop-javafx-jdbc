@@ -31,21 +31,30 @@ public class DepartmentFormController implements Initializable {
 	@FXML
 	Label labelNameError;
 
+	private Stage stage;
+
 	@FXML
-	public void onBtnSaveAction() {
+	public void onBtnSaveAction(ActionEvent event) {
+
+		if (department == null)
+			throw new IllegalStateException("department was null");
+		if (departmentService == null)
+			throw new IllegalStateException("departmentService was null");
+
 		Department department = new Department();
+		department.setId(utils.tryPaserInt(textFieldId.getText()));
 		department.setName(textFieldName.getText());
-		departmentService.createDepartment(department);
+		departmentService.save(department);
+
+		stage.close();
 	}
 
 	@FXML
 	public void onBtnCancelAction(ActionEvent event) {
-		Stage stage = utils.getStageOfEvent(event);
+		/*
+		 * Stage stage = utils.getStageOfEvent(event); stage.close();
+		 */
 		stage.close();
-	}
-
-	public void setDepartmentService(DepartmentService departmentService) {
-		this.departmentService = departmentService;
 	}
 
 	@Override
@@ -58,15 +67,23 @@ public class DepartmentFormController implements Initializable {
 		Constraints.setTextFieldMaxLength(textFieldName, 30);
 	}
 
+	public void setDepartmentService(DepartmentService departmentService) {
+		this.departmentService = departmentService;
+	}
+
 	public void setDepartment(Department department) {
 		this.department = department;
 	}
 
 	public void updateFormData() {
 		if (department == null)
-			throw new IllegalStateException("Attribute department was null");
+			throw new IllegalStateException("department was null");
 		textFieldId.setText(String.valueOf(department.getId()));
 		textFieldName.setText(department.getName());
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 
 }
