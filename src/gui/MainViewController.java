@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -39,9 +40,10 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	public void onMenuItemDepartmentAction() {
-		DepartmentListController controller = (DepartmentListController) loadView("DepartmentList");
-		controller.setDepartmentService(new DepartmentService());
-		controller.updateTableView();
+		loadView("DepartmentList", (DepartmentListController controller) -> {
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
+		});		
 	}
 
 	@FXML
@@ -49,7 +51,12 @@ public class MainViewController implements Initializable {
 		loadView("About");
 	}
 
-	private synchronized Object loadView(String fxmlPath) {
+	private synchronized void loadView(String fxmlPath) {
+		loadView(fxmlPath, x -> {
+		});
+	}
+
+	private synchronized <T> void loadView(String fxmlPath, Consumer<T> callback) {
 		try {
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/" + fxmlPath + "View.fxml"));
@@ -62,15 +69,14 @@ public class MainViewController implements Initializable {
 
 			mainVBox.getChildren().clear();
 			mainVBox.getChildren().add(menuBar);
-			mainVBox.getChildren().addAll(newVBox.getChildren());
+			mainVBox.getChildren().addAll(newVBox.getChildren());			
 
-			return loader.getController();
+			T controller = loader.getController();
+			callback.accept(controller);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return null;
 	}
 }
