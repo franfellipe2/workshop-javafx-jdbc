@@ -37,7 +37,7 @@
                </GridPane.margin>
             </Label>
             <TextField fx:id="textFieldId" disable="true" editable="false" prefWidth="189.0" GridPane.columnIndex="1" />
-            <TextField fx:id="textFieldName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="textFieldName" onKeyPressed="#onTextFieldNameKeyPress" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="101.0" />
