@@ -1,17 +1,24 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.util.utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
@@ -29,19 +36,24 @@ public class DepartmentListController implements Initializable {
 
 	private DepartmentService departmentService;
 	private ObservableList<Department> obsList;
-	
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		initNodes();			
+		initNodes();
+	}
+
+	@FXML
+	public void newDeparment(ActionEvent event) {
+		createDialogForm(utils.getStageOfEvent(event));
 	}
 
 	private void initNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-		
+
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableView.prefHeightProperty().bind(stage.heightProperty());
-		
+
 	}
 
 	public void setDepartmentService(DepartmentService service) {
@@ -55,4 +67,22 @@ public class DepartmentListController implements Initializable {
 		tableView.setItems(obsList);
 	}
 
+	private void createDialogForm(Stage parentStage) {		
+		try {
+			
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/DepartmentFormView.fxml"));
+			Pane pane = loader.load();
+			Scene scene = new Scene(pane);
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Create new department");
+			dialogStage.setScene(scene);
+			dialogStage.initOwner(parentStage);
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.showAndWait();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
