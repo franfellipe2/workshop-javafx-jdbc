@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="137.0" prefWidth="546.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="137.0" prefWidth="546.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DepartmentFormController">
    <children>
       <GridPane prefHeight="157.0" prefWidth="546.0">
         <columnConstraints>
@@ -36,8 +36,8 @@
                   <Insets right="10.0" />
                </GridPane.margin>
             </Label>
-            <TextField disable="true" editable="false" prefWidth="189.0" GridPane.columnIndex="1" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="textFieldId" disable="true" editable="false" prefWidth="189.0" GridPane.columnIndex="1" />
+            <TextField fx:id="textFieldName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="101.0" />
@@ -47,11 +47,11 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="91.0" text="Save" />
-                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="94.0" text="Cancel" GridPane.columnIndex="1" />
+                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onBtnSaveAction" prefHeight="30.0" prefWidth="91.0" text="Save" />
+                  <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#onBtnCancelAction" prefHeight="30.0" prefWidth="94.0" text="Cancel" GridPane.columnIndex="1" />
                </children>
             </GridPane>
-            <Label textFill="RED" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Label fx:id="labelNameError" textFill="RED" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
