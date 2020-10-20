@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Optional;
@@ -15,7 +16,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -23,6 +26,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
 import model.services.SellerService;
@@ -90,26 +95,32 @@ public class SellerListController implements Initializable, DataChangeListener {
 	}
 
 	private void createDialogForm(Seller seller, Stage parentStage) {
-		/*
-		 * try {
-		 * 
-		 * FXMLLoader loader = new
-		 * FXMLLoader(getClass().getResource("/gui/SellerFormView.fxml")); Pane pane =
-		 * loader.load();
-		 * 
-		 * Scene scene = new Scene(pane); Stage dialogStage = new Stage();
-		 * 
-		 * SellerFormController controller = loader.getController();
-		 * controller.setStage(dialogStage); controller.setSeller(seller);
-		 * controller.addOnDataChanhgeListener(this); controller.setSellerService(new
-		 * SellerService()); controller.updateFormData();
-		 * 
-		 * dialogStage.setTitle("Create new seller"); dialogStage.setScene(scene);
-		 * dialogStage.initOwner(parentStage);
-		 * dialogStage.initModality(Modality.WINDOW_MODAL); dialogStage.showAndWait();
-		 * 
-		 * } catch (IOException e) { e.printStackTrace(); }
-		 */
+
+		try {
+
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/SellerFormView.fxml"));
+			Pane pane = loader.load();
+
+			Scene scene = new Scene(pane);
+			Stage dialogStage = new Stage();
+
+			SellerFormController controller = loader.getController();
+			controller.setStage(dialogStage);
+			controller.setSeller(seller);
+			controller.addOnDataChanhgeListener(this);
+			controller.setSellerService(new SellerService());
+			controller.updateFormData();
+
+			dialogStage.setTitle("Create new seller");
+			dialogStage.setScene(scene);
+			dialogStage.initOwner(parentStage);
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.showAndWait();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
