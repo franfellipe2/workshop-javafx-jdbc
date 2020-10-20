@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="286.0" prefWidth="356.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SellerListController">
+<VBox prefHeight="286.0" prefWidth="677.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SellerListController">
    <children>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Seller manager">
          <font>
@@ -28,6 +28,9 @@
         <columns>
           <TableColumn fx:id="tableColumnId" prefWidth="75.0" text="id" />
           <TableColumn fx:id="tableColumnName" prefWidth="75.0" text="Name" />
+            <TableColumn fx:id="tableCollumnEmail" prefWidth="75.0" text="Email" />
+            <TableColumn fx:id="tableCollumnBirthDate" prefWidth="75.0" text="BirthDate" />
+            <TableColumn fx:id="tableCollumnBaseSalary" prefWidth="75.0" text="Base Salary" />
             <TableColumn fx:id="tableColumnEDIT" prefWidth="75.0" />
             <TableColumn fx:id="tableColumnDelete" prefWidth="75.0" />
         </columns>

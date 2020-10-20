@@ -1,7 +1,7 @@
 package gui;
 
-import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -15,18 +15,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
 import model.services.SellerService;
@@ -41,6 +37,12 @@ public class SellerListController implements Initializable, DataChangeListener {
 	private TableColumn<Seller, Integer> tableColumnId;
 	@FXML
 	private TableColumn<Seller, String> tableColumnName;
+	@FXML
+	private TableColumn<Seller, String> tableCollumnEmail;
+	@FXML
+	private TableColumn<Seller, Date> tableCollumnBirthDate;
+	@FXML
+	private TableColumn<Seller, Double> tableCollumnBaseSalary;
 	@FXML
 	TableColumn<Seller, Seller> tableColumnEDIT;
 	@FXML
@@ -63,6 +65,11 @@ public class SellerListController implements Initializable, DataChangeListener {
 	private void initNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		tableCollumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		tableCollumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+		utils.formatTableCollumnDate(tableCollumnBirthDate, "dd/MM/yyyy");
+		tableCollumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
+		utils.formatTableCollumDouble(tableCollumnBaseSalary, 2);
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableView.prefHeightProperty().bind(stage.heightProperty());
@@ -154,7 +161,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 				sellerService.remove(obj);
 				updateTableView();
 			} catch (MyDbException e) {
-				Alerts.showAlert("Error", null, "Error on delete Seller: "+e.getMessage(), AlertType.ERROR);
+				Alerts.showAlert("Error", null, "Error on delete Seller: " + e.getMessage(), AlertType.ERROR);
 			}
 		}
 	}
