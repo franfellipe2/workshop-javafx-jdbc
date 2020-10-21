@@ -24,9 +24,17 @@ public class utils {
 		return (Stage) ((Node) event.getSource()).getScene().getWindow();
 	}
 
-	public static Integer tryPaserInt(String str) {
+	public static Integer tryPaserInt(String text) {
 		try {
-			return Integer.parseInt(str);
+			return Integer.parseInt(text);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static Double tryParseDouble(String text) {
+		try {
+			return Double.parseDouble(text);
 		} catch (Exception e) {
 			return null;
 		}
@@ -97,5 +105,5 @@ public class utils {
 			}
 		});
 	}
-	
+
 }

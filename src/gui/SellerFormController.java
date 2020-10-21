@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -88,7 +90,7 @@ public class SellerFormController implements Initializable {
 
 		try {
 
-			sellerService.save(getSellerFromForm());
+			sellerService.save(getSellerOfForm());
 			notifyOnDataChengeListeners();
 			stage.close();
 
@@ -113,27 +115,50 @@ public class SellerFormController implements Initializable {
 		labelErrorName.setText("");
 	}
 
+	private Seller getSellerOfForm() {
+
+		validationSeller();
+
+		Seller s = new Seller();
+		s.setId(utils.tryPaserInt(textFieldId.getText()));
+		s.setName(textFieldName.getText());
+		s.setEmail(textFieldEmail.getText());
+		s.setBaseSalary(utils.tryParseDouble(textFieldBaseSalary.getText()));
+		Instant instant = Instant.from(datePickerBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+		s.setBirthDate(Date.from(instant));
+		s.setDepartment(comboBoxDepartment.getValue());
+
+		return s;
+	}
+
 	private void showErrors(ValidationException e) {
 		Map<String, String> errors = e.getErrors();
 		labelErrorName.setText(errors.get("textFieldName"));
-
+		labelErrorEmail.setText(errors.get("textFieldEmail"));
+		labelErrorSalary.setText(errors.get("textFieldBaseSalary"));
+		labelErrorDate.setText(errors.get("datePickerBirthDate"));
+		
 	}
 
-	private Seller getSellerFromForm() {
+	private void validationSeller() {
 
 		ValidationException validateException = new ValidationException("Form errors!");
 
 		if (textFieldName == null || textFieldName.getText() == null || textFieldName.getText().trim().isEmpty())
 			validateException.addError("textFieldName", "Name is empty!");
 
-		Seller d = new Seller();
-		d.setId(utils.tryPaserInt(textFieldId.getText()));
-		d.setName(textFieldName.getText());
+		if (textFieldEmail == null || textFieldEmail.getText() == null || textFieldEmail.getText().trim().isEmpty())
+			validateException.addError("textFieldEmail", "Email is empty!");
+
+		if (textFieldBaseSalary == null || textFieldBaseSalary.getText() == null
+				|| textFieldBaseSalary.getText().trim().isEmpty())
+			validateException.addError("textFieldBaseSalary", "Base salary is empty!");
+
+		if (datePickerBirthDate.getValue() == null)
+			validateException.addError("datePickerBirthDate", "Birth date is empty!");
 
 		if (validateException.getErrors().size() > 0)
 			throw validateException;
-
-		return d;
 	}
 
 	private void initNodes() {
