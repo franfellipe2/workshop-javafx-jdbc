@@ -30,6 +30,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerListController implements Initializable, DataChangeListener {
@@ -108,7 +109,8 @@ public class SellerListController implements Initializable, DataChangeListener {
 			controller.setStage(dialogStage);
 			controller.setSeller(seller);
 			controller.addOnDataChanhgeListener(this);
-			controller.setSellerService(new SellerService());
+			controller.setServices(new SellerService(), new DepartmentService());
+			controller.loadAssociateDepartments();
 			controller.updateFormData();
 
 			dialogStage.setTitle("Create new seller");

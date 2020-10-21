@@ -14,17 +14,26 @@ import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.utils;
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import model.entities.Department;
 import model.entities.Seller;
 import model.exceptions.ValidationException;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerFormController implements Initializable {
@@ -43,6 +52,8 @@ public class SellerFormController implements Initializable {
 	private DatePicker datePickerBirthDate;
 	@FXML
 	private TextField textFieldBaseSalary;
+	@FXML
+	private ComboBox<Department> comboBoxDepartment;
 
 	@FXML
 	private Button btnSave;
@@ -59,10 +70,12 @@ public class SellerFormController implements Initializable {
 	private Label labelErrorSalary;
 
 	private Stage stage;
+	private DepartmentService departmentSevice;
+	private ObservableList<Department> obsDepartments;
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		constraintsNodes();
+		initNodes();
 	}
 
 	@FXML
@@ -123,17 +136,19 @@ public class SellerFormController implements Initializable {
 		return d;
 	}
 
-	private void constraintsNodes() {
+	private void initNodes() {
 		Constraints.setTextFieldInteger(textFieldId);
 		Constraints.setTextFieldMaxLength(textFieldName, 80);
 		Constraints.setTextFieldMaxLength(textFieldEmail, 120);
 		utils.formatDatePicker(datePickerBirthDate, "dd/MM/yyyy");
 		Locale.setDefault(Locale.US);
 		Constraints.setTextFieldDouble(textFieldBaseSalary);
+		initializeCombobox();
 	}
 
-	public void setSellerService(SellerService sellerService) {
+	public void setServices(SellerService sellerService, DepartmentService departmentSevice) {
 		this.sellerService = sellerService;
+		this.departmentSevice = departmentSevice;
 	}
 
 	public void setSeller(Seller seller) {
@@ -151,6 +166,11 @@ public class SellerFormController implements Initializable {
 					.setValue(LocalDate.ofInstant(seller.getBirthDate().toInstant(), ZoneId.systemDefault()));
 		}
 		textFieldBaseSalary.setText(String.format("%.2f", seller.getBaseSalary()));
+		if (seller.getDepartment() != null)
+			comboBoxDepartment.setValue(seller.getDepartment());
+		else
+			comboBoxDepartment.getSelectionModel().selectFirst();
+
 	}
 
 	public void setStage(Stage stage) {
@@ -169,6 +189,31 @@ public class SellerFormController implements Initializable {
 		for (DataChangeListener dataChangeListener : onDataChangeListeners) {
 			dataChangeListener.onDataUpdate();
 		}
+	}
+
+	public void loadAssociateDepartments() {
+		List<Department> list = departmentSevice.findAll();
+		obsDepartments = FXCollections.observableList(list);
+		comboBoxDepartment.setItems(obsDepartments);
+	}
+
+	private void initializeCombobox() {
+
+		Callback<ListView<Department>, ListCell<Department>> callback = listView -> {
+			ListCell<Department> cell = new ListCell<>() {
+				@Override
+				protected void updateItem(Department obj, boolean empty) {
+					super.updateItem(obj, empty);
+					setText(empty ? null : obj.getName());
+				}
+
+			};
+			return cell;
+		};
+
+		comboBoxDepartment.setCellFactory(callback);
+		comboBoxDepartment.setButtonCell(callback.call(null));
+
 	}
 
 }
